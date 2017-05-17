@@ -21,7 +21,7 @@ import javax.swing.JEditorPane;
 
 public class Menu {
 
-	private JFrame frame;
+	private JFrame menuFrame;
 	private JTextField textField_1;
 	private JTextField textField_2;
 	private JTextField txtSearch;
@@ -34,7 +34,7 @@ public class Menu {
 			public void run() {
 				try {
 					Menu window = new Menu();
-					window.frame.setVisible(true);
+					window.getMenuFrame().setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -53,14 +53,14 @@ public class Menu {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 638, 450);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		setMenuFrame(new JFrame());
+		getMenuFrame().setBounds(100, 100, 638, 450);
+		getMenuFrame().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		getMenuFrame().getContentPane().setLayout(null);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(10, 11, 601, 391);
-		frame.getContentPane().add(tabbedPane);
+		getMenuFrame().getContentPane().add(tabbedPane);
 		
 		JPanel panelSearch = new JPanel();
 		tabbedPane.addTab("Search", null, panelSearch, null);
@@ -173,5 +173,13 @@ public class Menu {
 		JPanel panelProfile = new JPanel();
 		tabbedPane.addTab("Profile", null, panelProfile, null);
 		panelProfile.setLayout(null);
+	}
+
+	public JFrame getMenuFrame() {
+		return menuFrame;
+	}
+
+	public void setMenuFrame(JFrame menuFrame) {
+		this.menuFrame = menuFrame;
 	}
 }
