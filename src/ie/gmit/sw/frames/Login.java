@@ -21,41 +21,41 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.swing.JPasswordField;
 
 public class Login {
 
 	private JFrame loginFrame;
 	private JTextField txtUsername;
-	private JPasswordField txtPassword;
+	private JTextField txtPassword;
 
-	/**
-	 * Launch the application.
-	 */
+	// Launch the application
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					// Construct new instance of login frame
 					Login login = new Login();
+					// Get new login frame & set its location to centre
 					login.getLoginFrame().setLocationRelativeTo(null);
+					// Set the login frame to be visible
 					login.getLoginFrame().setVisible(true);
-				} catch (Exception e) {
+				}// End of try
+				catch (Exception e) {
 					e.printStackTrace();
-				}
-			}
-		});
-	}
+				}// End of catch
+			}// End of run
+		});// End of Runnable
+	}// End of main
 
-	/**
-	 * Create the application.
-	 */
+
+	// Create the application
 	public Login() {
+		// Initialize all components
 		initialize();
-	}
+	}// End of Login
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
+
+	// Initialization of the contents of the frame
 	private void initialize() {
 		setLoginFrame(new JFrame());
 		getLoginFrame().setTitle("Recipe-It");
@@ -107,8 +107,8 @@ public class Login {
 		panel.add(txtUsername);
 		txtUsername.setColumns(10);
 		
-		txtPassword = new JPasswordField();
-		txtPassword.setText("***********");
+		txtPassword = new JTextField();
+		txtPassword.setText("Password");
 		txtPassword.setBorder(null);
 		txtPassword.setFont(new Font("Cambria", Font.ITALIC, 12));
 		txtPassword.setHorizontalAlignment(SwingConstants.CENTER);
@@ -118,18 +118,21 @@ public class Login {
 		txtPassword.setColumns(10);
 		
 		JButton btnSignin = new JButton("Sign-in");
+		// Declaration of action listener on a sign-in button
 		btnSignin.addActionListener(new ActionListener() {
+			// Declaration of event handler for when action on the button is performed
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					// Setting up connection to the database
-					// Create MySQL database connection
+					// Creating MySQL database connection using java database connectivity driver
 					Class.forName("com.mysql.jdbc.Driver");
+					// Defining the connection
 					Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/recipeit?" + "user=root&password=");     
+					// Declaration of a create statement
 					Statement state = c.createStatement();
 					
 					// Declaration of query statement for the database
-					String query = "SELECT username, password from user_credentials";
-					// Declaration of result set & initialisation of the statement
+					String query = "SELECT username, password FROM users";
+					// Declaration of result set, initialisation & execution of the statement
 			        ResultSet rs = state.executeQuery(query);
 			        
 			        // Declaration of local variables for later use
@@ -147,24 +150,28 @@ public class Login {
 						// Comparison of result set for user name with login input
 			        	if(userName.equals(txtUsername.getText())){
 			        		// Comparison of result set for user password with login input
-			        		if(userPass.equals(txtPassword.getPassword())){
+			        		if(userPass.equals(txtPassword.getText())){
 			        			// Create new instance of menu frame
-			        			Menu menu = new Menu();
-			        			// Set the location of the frame to centre
-			        			menu.getMenuFrame().setLocationRelativeTo(null);
-			        			// Set the frame to be visible
-			        			menu.getMenuFrame().setVisible(true);
+			        			Menu menuFrame = new Menu();
+			        			// Get the menu frame and set the location of the frame to the centre
+			        			menuFrame.getMenuFrame().setLocationRelativeTo(null);
+			        			// Set the menu frame to be visible
+			        			menuFrame.getMenuFrame().setVisible(true);
 			        			// Disposal of login frame
 			        			getLoginFrame().dispose();
 			        		}// End of if
 			        	}// End of if
 			        	else{
+			        		// set control variable to 2 for when condition is else
 		        			flag = 2;
 		        		}// End of else
 					}// End of while
 					
+					// Declaration of statement for when credentials are invalid
 					if(flag == 2){
+						// SHow message dialog and display message to inform user about the event
 						JOptionPane.showMessageDialog(null,"Input of credentials is incorrect! ", "\nPlease try again.",JOptionPane.ERROR_MESSAGE,null);
+						// Set Control variable back to initial value
 						flag = 1;
 					}// End of if
 					
@@ -175,13 +182,12 @@ public class Login {
 				
 				catch(SQLException ex) {
 					ex.printStackTrace();
-				} // end catch
+				}// end catch
 				
 				catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}// End of catch
 			}// End of event handler
-			
 		});// End of action listener
 		btnSignin.setBorder(null);
 		btnSignin.setToolTipText("Sign-in if an existing user");
@@ -216,12 +222,16 @@ public class Login {
 		lblBackground.setFont(new Font("Cambria", Font.BOLD, 20));
 		panel.add(lblBackground);
 	}
-
+	
+	// Get login frame function to get instance of this current frame
 	public JFrame getLoginFrame() {
+		// Return login for instance
 		return loginFrame;
-	}
-
+	}// End of getLoginFrame
+	
+	// Set login frame function to set the instance of this current frame
 	public void setLoginFrame(JFrame loginFrame) {
+		// set the instance to private variable
 		this.loginFrame = loginFrame;
-	}
-}
+	}// End of setLoginFrame
+}// End of Login

@@ -6,15 +6,21 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.SwingConstants;
-import javax.swing.JPasswordField;
 import java.awt.Color;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.awt.event.ActionEvent;
 
 public class Register {
@@ -23,14 +29,24 @@ public class Register {
 	private JTextField txtName;
 	private JTextField txtSurname;
 	private JTextField txtUsername;
-	private JPasswordField txtPassword;
-	private JPasswordField txtpasswordConfirmation;
+	private JTextField txtPassword;
+	private JTextField txtpasswordConfirmation;
+	private JPanel panelCredentials;
 	@SuppressWarnings("rawtypes")
 	private JComboBox dropdownDays;
 	@SuppressWarnings("rawtypes")
 	private JComboBox dropdownMonths;
 	@SuppressWarnings("rawtypes")
 	private JComboBox dropdownYears;
+	private String name;
+	private String surname;
+	private String day;
+	private String month;
+	private String year;
+	private String date;
+	public int selectedOption;
+	
+
 	
 	/**
 	 * Launch the application.
@@ -185,7 +201,16 @@ public class Register {
 		JButton btnNext = new JButton("Next");
 		btnNext.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				setName(txtName.getText());
+				setSurname(txtSurname.getText());
+				setDay((String)dropdownDays.getSelectedItem());
+				setMonth((String)dropdownMonths.getSelectedItem());
+				setYear((String)dropdownYears.getSelectedItem());
+				setDate(getDay(), getMonth(), getYear());
+				
+				panelPersonalDetails.setVisible(false);
+				getPanelCredentials();
+				panelCredentials.setVisible(true);
 			}// End of event handler
 		});// End of action listener
 		btnNext.setBorder(null);
@@ -196,14 +221,21 @@ public class Register {
 		JButton btnReturn2 = new JButton("Return");
 		btnReturn2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// Create new instance of Register Frame
-				Login login = new Login();
-				// Get register frame and set its position to centre
-				login.getLoginFrame().setLocationRelativeTo(null);
-				// Get register frame and set it to visible
-				login.getLoginFrame().setVisible(true);
-				// Disposal of login frame 
-				registerFrame.dispose();
+				// Confirmation dialog box to get user to approve the action
+				selectedOption = JOptionPane.showConfirmDialog(null,
+						"Do you wish to return to Login Frame?\nCurrent data will be lost!", "Please select...",
+						JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				// Check for user selection, if yes selected then carry out the action
+				if (selectedOption == JOptionPane.YES_OPTION) {
+					// Create new instance of Register Frame
+					Login login = new Login();
+					// Get register frame and set its position to centre
+					login.getLoginFrame().setLocationRelativeTo(null);
+					// Get register frame and set it to visible
+					login.getLoginFrame().setVisible(true);
+					// Disposal of login frame 
+					registerFrame.dispose();
+				}// End of if
 			}// End of event handler
 		});// End of action listener
 		
@@ -245,18 +277,16 @@ public class Register {
 		txtUsername.setFont(new Font("Cambria", Font.ITALIC, 12));
 		txtUsername.setColumns(10);
 		
-		txtPassword = new JPasswordField();
+		txtPassword = new JTextField();
 		txtPassword.setBounds(167, 206, 188, 21);
 		panelCredentials.add(txtPassword);
-		txtPassword.setFont(new Font("Cambria", Font.BOLD | Font.ITALIC, 12));
-		txtPassword.setEchoChar('*');
+		txtPassword.setFont(new Font("Cambria", Font.ITALIC, 12));
 		txtPassword.setColumns(10);
 		
-		txtpasswordConfirmation = new JPasswordField();
+		txtpasswordConfirmation = new JTextField();
 		txtpasswordConfirmation.setBounds(167, 235, 188, 21);
 		panelCredentials.add(txtpasswordConfirmation);
-		txtpasswordConfirmation.setEchoChar('*');
-		txtpasswordConfirmation.setFont(new Font("Cambria", Font.BOLD | Font.ITALIC, 12));
+		txtpasswordConfirmation.setFont(new Font("Cambria", Font.ITALIC, 12));
 		txtpasswordConfirmation.setColumns(10);
 		
 		JLabel lblStar4 = new JLabel("*");
@@ -314,14 +344,105 @@ public class Register {
 		panelCredentials.add(lblAccountCredentialsWill);
 		
 		JButton btnCreate = new JButton("Create");
+		btnCreate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String username = "";
+				int flag = 1;
+				
+				try{
+					// Setting up connection to the database
+					// Create MySQL database connection
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/recipeit?" + "user=root&password=");     
+					Statement state = c.createStatement();
+
+
+					// Query String
+					String selectQuery = "SELECT username FROM users";
+					// Execute the statement
+		            ResultSet rs = state.executeQuery(selectQuery);
+					
+					while(rs.next()) {
+						username = rs.getString("username");
+						if(username.equals(txtUsername.getText())){
+							flag = 2;
+							System.out.println(username+" = " + txtUsername.getText());
+						}// End of if
+	                }// End of while
+		            
+					if(flag == 1){
+						try {
+							// Setting up connection
+							Connection c2 = DriverManager.getConnection("jdbc:mysql://localhost:3306/recipeit?" + "user=root&password="); 
+							Statement state2 = c2.createStatement();
+							
+							if (txtPassword.getText().equals(txtpasswordConfirmation.getText())) {
+								// Formatting the query 
+								String insertQuery = "INSERT INTO users (username,password,name,surname,dob,recipeCount) VALUES ('"
+										+ txtUsername.getText() + "', '" +  txtPassword.getText() + "', '" 
+										+ getName() + "', '" + getSurname() + "', '" + getDate()+ "', 0)";
+
+								// Executing statement
+								state2.executeUpdate(insertQuery);
+								c2.close();
+								state2.close();
+								
+								//
+								registerFrame.dispose();
+								//
+								Login login = new Login();
+								//
+								login.getLoginFrame().setLocationRelativeTo(null);
+								//
+								login.getLoginFrame().setVisible(true);
+				            }// End of if
+				            
+				            else {
+				            	  JOptionPane.showMessageDialog(null, "Passwords do not match!\nPlease try again...", 
+				            			  "Confirmation Failed!", JOptionPane.ERROR_MESSAGE);
+				            }// End of else
+
+						}// End of try
+						catch(SQLException ex) {
+							ex.printStackTrace();
+						}// End of catch
+					}// End of if
+					else if(flag != 1){
+						JOptionPane.showMessageDialog(null,
+								"Sorry, but the username '" + username + "' already exist!\nPlease use different username.",
+								"Invalid username", JOptionPane.WARNING_MESSAGE);
+					}// End of else
+					
+					c.close();
+					state.close();
+				}// End of try
+				
+				catch(Exception ex){
+					ex.printStackTrace();
+				}// End of catch
+			}// End of even handler
+		});// End of action listener
 		btnCreate.setFont(new Font("Cambria", Font.BOLD | Font.ITALIC, 14));
 		btnCreate.setBounds(167, 267, 89, 23);
 		panelCredentials.add(btnCreate);
 		
 		JButton btnReturn = new JButton("Return");
+		btnReturn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				selectedOption = JOptionPane.showConfirmDialog(null,
+						"Do you wish to return to previous view?", "Please select...",
+						JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				if (selectedOption == JOptionPane.YES_OPTION) {
+					panelCredentials.setVisible(false);
+					panelPersonalDetails.setVisible(true);
+				}// End of if
+			}// End of event handler
+		});// End of action listener
 		btnReturn.setFont(new Font("Cambria", Font.BOLD | Font.ITALIC, 14));
 		btnReturn.setBounds(266, 267, 89, 23);
 		panelCredentials.add(btnReturn);
+		
+		this.setPanelCredentials(panelCredentials);
 		
 		JLabel lblBackground = new JLabel("");
 		lblBackground.setBounds(0, 0, 538, 362);
@@ -336,4 +457,59 @@ public class Register {
 		this.registerFrame = registerFrame;
 	}
 	
+	public JPanel getPanelCredentials() {
+		return panelCredentials;
+	}
+
+	public void setPanelCredentials(JPanel panel) {
+		this.panelCredentials = panel;
+	}
+	
+	public String getName(){
+		return name;
+	}
+	
+	public void setName(String userName){
+		name = "" + userName;
+	}
+	
+	public String getSurname(){
+		return surname;
+	}
+	
+	public void setSurname(String userSurname){
+		surname = "" + userSurname;
+	}
+	
+	public String getDay(){
+		return day;
+	}
+	
+	public void setDay(String selectedDay){
+		day = selectedDay;
+	}
+	
+	public String getMonth(){
+		return month;
+	}
+	
+	public void setMonth(String selectedMonth){
+		month = selectedMonth;
+	}
+	
+	public String getYear(){
+		return year;
+	}
+	
+	public void setYear(String selectedYear){
+		year = selectedYear;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String day, String month, String year) {
+		this.date = year + "-" + month + "-" + day;
+	}
 }
