@@ -131,12 +131,12 @@ public class Login {
 					Statement state = c.createStatement();
 					
 					// Declaration of select query statement for the database
-					String selectQuery = "SELECT username, password FROM users";
+					String selectQuery = "SELECT userID, username, password FROM users";
 					// Declaration of result set, initialisation & execution of the statement
 			        ResultSet rs = state.executeQuery(selectQuery);
 			        
 			        // Declaration of local variables for later use
-			        String userName, userPass;
+			        String id, userName, userPass;
 			        // Declaration of control variable
 			        int flag = 1;
 					
@@ -144,6 +144,7 @@ public class Login {
 					while(rs.next()){
 						flag = 1;
 						// Initialisation of the local variables with values returned from database
+						id = rs.getString("userID");
 						userName = rs.getString("username");
 						userPass = rs.getString("password");
 			        	
@@ -153,6 +154,8 @@ public class Login {
 			        		if(userPass.equals(txtPassword.getText())){
 			        			// Create new instance of menu frame
 			        			Menu menuFrame = new Menu();
+			        			// Set id in menu frame to user id of current user
+			        			menuFrame.setId(id);
 			        			// Get the menu frame and set the location of the frame to the centre
 			        			menuFrame.getMenuFrame().setLocationRelativeTo(null);
 			        			// Set the menu frame to be visible

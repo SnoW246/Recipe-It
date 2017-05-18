@@ -220,7 +220,6 @@ public class Register {
 				// Set date taking values saved from combo boxes
 				// preparing valid date format for the database
 				setDate(getDay(), getMonth(), getYear());
-				
 				// Set visibility of the current panel within 
 				// the registration frame to false
 				panelPersonalDetails.setVisible(false);
@@ -423,7 +422,7 @@ public class Register {
 								state2.executeUpdate(insertQuery);
 								// closure of all connections
 								c2.close();
-								state2.close();	
+								state2.close();
 								
 								// Display information message dialog to inform 
 								// that user has been created successfully
