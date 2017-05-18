@@ -425,14 +425,21 @@ public class Register {
 								c2.close();
 								state2.close();	
 								
-								// Creating a new instance of login frame
-								Login loginFrame = new Login();
-								// Getting the instance of login frame and setting the position of it to the center
-								loginFrame.getLoginFrame().setLocationRelativeTo(null);
-								// Setting the login frame to be visible
-								loginFrame.getLoginFrame().setVisible(true);
-								// Disposal of register frame
-								registerFrame.dispose();
+								// Display information message dialog to inform 
+								// that user has been created successfully
+								selectedOption = JOptionPane.showConfirmDialog(null, "User successgully created...", 
+				            			  "Success!", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE);
+								// Statement condition to close the frame after user has been informed
+								if(selectedOption == JOptionPane.OK_OPTION){
+									// Creating a new instance of login frame
+									Login loginFrame = new Login();
+									// Getting the instance of login frame and setting the position of it to the centre
+									loginFrame.getLoginFrame().setLocationRelativeTo(null);
+									// Setting the login frame to be visible
+									loginFrame.getLoginFrame().setVisible(true);
+									// Disposal of register frame
+									registerFrame.dispose();
+								}// End of if
 				            }// End of if
 				            
 							// Else to show error message dialog to inform user that password confirmation failed
@@ -477,7 +484,7 @@ public class Register {
 		btnReturn.addActionListener(new ActionListener() {
 			// Declaration of event handler for when the action on the button is performed
 			public void actionPerformed(ActionEvent e) {
-				// Declaration & initialization of a wardning message dialog with select option on it
+				// Declaration & initialization of a warning message dialog with select option on it
 				// asking user if they wish to proceed
 				selectedOption = JOptionPane.showConfirmDialog(null,
 						"Do you wish to return to previous view?", "Please select...",
