@@ -3,11 +3,6 @@ package ie.gmit.sw.frames;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -16,7 +11,6 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.JList;
 import javax.swing.JEditorPane;
 
 public class Menu {

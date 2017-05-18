@@ -23,7 +23,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class Login {
-
+	// Declaration of variables
 	private JFrame loginFrame;
 	private JTextField txtUsername;
 	private JTextField txtPassword;
@@ -33,7 +33,7 @@ public class Login {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					// Construct new instance of login frame
+					// Constructing new instance of login frame
 					Login login = new Login();
 					// Get new login frame & set its location to centre
 					login.getLoginFrame().setLocationRelativeTo(null);
@@ -50,12 +50,12 @@ public class Login {
 
 	// Create the application
 	public Login() {
-		// Initialize all components
+		// Initialization of all components
 		initialize();
 	}// End of Login
 
 
-	// Initialization of the contents of the frame
+	// Initialization of the content of the frame
 	private void initialize() {
 		setLoginFrame(new JFrame());
 		getLoginFrame().setTitle("Recipe-It");
@@ -130,10 +130,10 @@ public class Login {
 					// Declaration of a create statement
 					Statement state = c.createStatement();
 					
-					// Declaration of query statement for the database
-					String query = "SELECT username, password FROM users";
+					// Declaration of select query statement for the database
+					String selectQuery = "SELECT username, password FROM users";
 					// Declaration of result set, initialisation & execution of the statement
-			        ResultSet rs = state.executeQuery(query);
+			        ResultSet rs = state.executeQuery(selectQuery);
 			        
 			        // Declaration of local variables for later use
 			        String userName, userPass;
@@ -221,7 +221,7 @@ public class Login {
 		lblBackground.setIcon(new ImageIcon(Login.class.getResource("/ie/gmit/sw/resources/Recipe-It Login.png")));
 		lblBackground.setFont(new Font("Cambria", Font.BOLD, 20));
 		panel.add(lblBackground);
-	}
+	}// End of Initialize
 	
 	// Get login frame function to get instance of this current frame
 	public JFrame getLoginFrame() {
